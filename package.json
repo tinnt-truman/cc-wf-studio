@@ -1,0 +1,116 @@
+{
+  "name": "cc-wf-studio",
+  "displayName": "Claude Code Workflow Studio",
+  "description": "Visual workflow editor for Claude Code Slash Commands, Sub Agents, Agent Skills, and MCP Tools",
+  "version": "3.10.0",
+  "publisher": "breaking-brake",
+  "icon": "resources/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/breaking-brake/cc-wf-studio"
+  },
+  "homepage": "https://breaking-brake.github.io/",
+  "license": "AGPL-3.0-or-later",
+  "keywords": [
+    "claude",
+    "claude code",
+    "claudecode",
+    "code",
+    "workflow",
+    "flow",
+    "visual-editor",
+    "automation",
+    "ai",
+    "mcp"
+  ],
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "AI",
+    "Visualization"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "cc-wf-studio.openEditor",
+        "title": "Claude Code Workflow Studio: Open Editor",
+        "icon": {
+          "light": "resources/icon.png",
+          "dark": "resources/icon.png"
+        }
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "cc-wf-studio.openEditor",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Claude Code Workflow Studio",
+      "properties": {
+        "cc-wf-studio.ai.schemaFormat": {
+          "type": "string",
+          "enum": [
+            "json",
+            "toon"
+          ],
+          "default": "toon",
+          "description": "Schema format for AI prompts. 'toon' reduces token consumption by ~23%."
+        },
+        "cc-wf-studio.ai.collectMetrics": {
+          "type": "boolean",
+          "default": false,
+          "description": "Collect and log metrics for A/B comparison of schema formats. Note: Prompt format is always 'toon'."
+        }
+      }
+    }
+  },
+  "activationEvents": [
+    "onUri"
+  ],
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "generate:toon": "npx tsx scripts/generate-toon-schema.ts",
+    "build": "npm run generate:toon && npm run build:webview && npm run build:extension",
+    "build:dev": "npm run build:webview:dev && npm run build:extension:dev",
+    "build:webview": "cd src/webview && npm run build",
+    "build:webview:dev": "cd src/webview && npm run build:dev",
+    "build:extension": "vite build --config vite.extension.config.ts",
+    "build:extension:dev": "vite build --config vite.extension.config.ts --mode development",
+    "compile": "tsc -p ./",
+    "watch": "vite build --config vite.extension.config.ts --watch",
+    "watch:webview": "cd src/webview && npm run dev",
+    "lint": "biome lint .",
+    "format": "biome format --write .",
+    "check": "biome check --write .",
+    "test": "npm run test:unit && npm run test:integration",
+    "test:unit": "cd src/webview && npm run test",
+    "test:integration": "vscode-test",
+    "test:e2e": "wdio run wdio.conf.ts"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.3.8",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/exec": "^7.1.0",
+    "@semantic-release/git": "^10.0.1",
+    "@types/node": "^24.10.1",
+    "@types/vscode": "^1.80.0",
+    "@vscode/test-cli": "^0.0.12",
+    "@vscode/test-electron": "^2.3.8",
+    "conventional-changelog-conventionalcommits": "^9.1.0",
+    "semantic-release": "^25.0.2",
+    "typescript": "^5.3.0",
+    "vite": "^7.3.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.24.3",
+    "@slack/web-api": "^7.13.0",
+    "@toon-format/toon": "^1.4.0",
+    "nano-spawn": "^2.0.0"
+  }
+}
